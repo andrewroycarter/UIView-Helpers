@@ -100,18 +100,30 @@
         
         UIImage *image = [(UIButton *)self imageForState:UIControlStateNormal];
         
-        if (!image)
+        if (!image) {
+         
             image = [(UIButton *)self backgroundImageForState:UIControlStateNormal];
+            
+        }
         
-        if (!image)
+        if (!image) {
+        
             return;
+            
+        }
+        
         self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), image.size.width, image.size.height);
         
     } else if ([self isKindOfClass:[UIImageView class]]) {
         
         UIImage *image = [(UIImageView *)self image];
-        if (!image)
+        
+        if (!image) {
+        
             return;
+            
+        }
+        
         self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), image.size.width, image.size.height);
         
     }
