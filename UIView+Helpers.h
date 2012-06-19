@@ -1,6 +1,5 @@
 //
 //  UIView+Helpers.h
-//  Likes
 //
 //  Created by Andrew Carter on 11/9/11.
 
