@@ -121,12 +121,12 @@
 
 - (void)setFrameOriginXRightOfView:(UIView *)view {
     
-    [self setFrameOriginYRightOfView:view offset:0];
+    [self setFrameOriginXRightOfView:view offset:0];
 }
 
 - (void)setFrameOriginXLeftOfView:(UIView *)view {
     
-    [self setFrameOriginYLeftOfView:view offset:0];
+    [self setFrameOriginXLeftOfView:view offset:0];
 }
 
 - (void)setFrameOriginYBelowView:(UIView *)view offset:(CGFloat)offset {

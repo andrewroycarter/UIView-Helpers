@@ -18,8 +18,8 @@
 - (void)centerAlignForSuperview;
 
 //Convenience Getters
-- (CGFloat)frameX;
-- (CGFloat)frameY;
+- (CGFloat)frameOriginX;
+- (CGFloat)frameOriginY;
 - (CGFloat)frameSizeWidth;
 - (CGFloat)frameSizeHeight;
 
