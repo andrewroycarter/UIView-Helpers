@@ -9,6 +9,9 @@
 
 @implementation UIView (Helpers)
 
+#pragma mark -
+#pragma mark Alignment
+
 - (void)centerAlignHorizontalForView:(UIView *)view {
     
     self.frame = CGRectIntegral(CGRectMake((CGRectGetWidth(view.frame) / 2.0f) - (CGRectGetWidth(self.frame) / 2.0f), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
@@ -45,6 +48,41 @@
     
 }
 
+#pragma mark -
+#pragma mark Convenience Getters
+
+- (CGFloat)frameOriginX {
+    return self.frame.origin.x;
+}
+
+- (CGFloat)frameOriginY {
+    return self.frame.origin.y;
+}
+
+- (CGFloat)frameSizeWidth {
+    return self.frame.size.width;
+}
+
+- (CGFloat)frameSizeHeight {
+    return self.frame.size.height;    
+}
+
+- (void)centerAlignForView:(UIView *)view {
+    
+    [self centerAlignHorizontalForView:view];
+    [self centerAlignVerticalForView:view];
+    
+}
+
+- (void)centerAlignForSuperview {
+    
+    [self centerAlignForView:self.superview];
+    
+}
+
+#pragma mark -
+#pragma mark Frame Adjustments
+
 - (void)setFrameOriginY:(CGFloat)y {
     
     self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(self.frame), y, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
@@ -57,13 +95,46 @@
     
 }
 
+- (void)setFrameSizeWidth:(CGFloat)width {
+    
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), width, CGRectGetHeight(self.frame)));
+}
+
+- (void)setFrameSizeHeight:(CGFloat)height {
+    
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), height));
+}
+
+
+#pragma mark -
+#pragma mark Positioning Relative to View
+
+- (void)setFrameOriginYBelowView:(UIView *)view {
+    
+    [self setFrameOriginYBelowView:view offset:0];
+}
+
+- (void)setFrameOriginYAboveView:(UIView *)view {
+
+    [self setFrameOriginYAboveView:view offset:0];
+}
+
+- (void)setFrameOriginXRightOfView:(UIView *)view {
+    
+    [self setFrameOriginYRightOfView:view offset:0];
+}
+
+- (void)setFrameOriginXLeftOfView:(UIView *)view {
+    
+    [self setFrameOriginYLeftOfView:view offset:0];
+}
+
 - (void)setFrameOriginYBelowView:(UIView *)view offset:(CGFloat)offset {
     
     CGRect frame = self.frame;
     CGRect viewFrame = view.frame;
     
     self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(frame), CGRectGetMaxY(viewFrame) + offset, CGRectGetWidth(frame), CGRectGetHeight(frame)));
-    
 }
 
 - (void)setFrameOriginYAboveView:(UIView *)view offset:(CGFloat)offset {
@@ -92,6 +163,9 @@
     self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(viewFrame) - CGRectGetWidth(frame) - offset, CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)));
     
 }
+
+#pragma mark -
+#pragma mark Resizing
 
 - (void)setFrameSizeToImageSize {
     
@@ -126,19 +200,6 @@
         self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), image.size.width, image.size.height);
         
     }
-    
-}
-
-- (void)centerAlignForView:(UIView *)view {
-    
-    [self centerAlignHorizontalForView:view];
-    [self centerAlignVerticalForView:view];
-    
-}
-
-- (void)centerAlignForSuperview {
-    
-    [self centerAlignForView:self.superview];
     
 }
 

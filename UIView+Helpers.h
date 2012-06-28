@@ -17,14 +17,30 @@
 - (void)centerAlignForView:(UIView *)view;
 - (void)centerAlignForSuperview;
 
+//Convenience Getters
+- (CGFloat)frameX;
+- (CGFloat)frameY;
+- (CGFloat)frameSizeWidth;
+- (CGFloat)frameSizeHeight;
+
 //Frame Adjustments
 - (void)setFrameOriginY:(CGFloat)y;
 - (void)setFrameOriginX:(CGFloat)x;
+- (void)setFrameSizeWidth:(CGFloat)width;
+- (void)setFrameSizeHeight:(CGFloat)height;
+
+//Positioning Relative to View
+- (void)setFrameOriginYBelowView:(UIView *)view;
+- (void)setFrameOriginYAboveView:(UIView *)view;
+- (void)setFrameOriginXRightOfView:(UIView *)view;
+- (void)setFrameOriginXLeftOfView:(UIView *)view;
+
 - (void)setFrameOriginYBelowView:(UIView *)view offset:(CGFloat)offset;
 - (void)setFrameOriginYAboveView:(UIView *)view offset:(CGFloat)offset;
 - (void)setFrameOriginXRightOfView:(UIView *)view offset:(CGFloat)offset;
 - (void)setFrameOriginXLeftOfView:(UIView *)view offset:(CGFloat)offset;
 
+//Resizing
 - (void)setFrameSizeToImageSize;
 
 //Making rounded corners
