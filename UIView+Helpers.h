@@ -7,23 +7,48 @@
 
 @interface UIView (Helpers)
 
+// Init
+- (id)initWithSize:(CGSize)size;
+
 //Alignment
 - (void)centerAlignHorizontalForView:(UIView *)view;
 - (void)centerAlignVerticalForView:(UIView *)view;
-- (void)centerAlignHorizontalForSuperView;
-- (void)centerAlignVerticalForSuperView;
+- (void)centerAlignForView:(UIView *)view;
+
 - (void)leftAlignForView:(UIView *)view;
 - (void)rightAlignForView:(UIView *)view;
-- (void)centerAlignForView:(UIView *)view;
+- (void)topAlignForView:(UIView *)view;
+- (void)bottomAlignForView:(UIView *)view;
+
+- (void)leftAlignForView:(UIView *)view offset:(CGFloat)offset;
+- (void)rightAlignForView:(UIView *)view offset:(CGFloat)offset;
+- (void)topAlignForView:(UIView *)view offset:(CGFloat)offset;
+- (void)bottomAlignForView:(UIView *)view offset:(CGFloat)offset;
+
 - (void)centerAlignForSuperview;
+- (void)centerAlignHorizontalForSuperView;
+- (void)centerAlignVerticalForSuperView;
+
+- (void)topAlignForForSuperView;
+- (void)bottomAlignForSuperView;
+- (void)leftAlignForForSuperView;
+- (void)rightAlignForSuperView;
+
+- (void)topAlignForForSuperViewOffset:(CGFloat)offset;
+- (void)bottomAlignForSuperViewOffset:(CGFloat)offset;
+- (void)leftAlignForForSuperViewOffset:(CGFloat)offset;
+- (void)rightAlignForSuperViewOffset:(CGFloat)offset;
 
 //Convenience Getters
 - (CGFloat)frameOriginX;
 - (CGFloat)frameOriginY;
 - (CGFloat)frameSizeWidth;
 - (CGFloat)frameSizeHeight;
+- (CGSize)frameSize;
 
 //Frame Adjustments
+- (void)setFrameSize:(CGSize)size;
+
 - (void)setFrameOriginY:(CGFloat)y;
 - (void)setFrameOriginX:(CGFloat)x;
 - (void)setFrameSizeWidth:(CGFloat)width;

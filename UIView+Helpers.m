@@ -10,6 +10,19 @@
 @implementation UIView (Helpers)
 
 #pragma mark -
+#pragma mark Init
+
+- (id)initWithSize:(CGSize)size
+{
+    if ((self = [self init]))
+    {
+        [self setFrameSize:size];
+    }
+    
+    return self;
+}
+
+#pragma mark -
 #pragma mark Alignment
 
 - (void)centerAlignHorizontalForView:(UIView *)view {
@@ -38,18 +51,110 @@
 
 - (void)leftAlignForView:(UIView *)view {
     
-    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(view.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
-    
+    [self leftAlignForView:view offset:0];
 }
 
 - (void)rightAlignForView:(UIView *)view {
     
-    self.frame = CGRectIntegral(CGRectMake(CGRectGetMaxX(view.frame) - CGRectGetWidth(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self rightAlignForSuperViewOffset:0];
+}
+
+- (void)topAlignForView:(UIView *)view {
+    
+    [self topAlignForView:view offset:0];
+}
+
+- (void)bottomAlignForView:(UIView *)view {
+    
+    [self bottomAlignForView:view offset:0];
+}
+
+- (void)leftAlignForView:(UIView *)view offset:(CGFloat)offset {
+    
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(view.frame) + offset, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+}
+
+- (void)rightAlignForView:(UIView *)view offset:(CGFloat)offset {
+
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMaxX(view.frame) - CGRectGetWidth(self.frame) - offset, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+}
+
+- (void)topAlignForView:(UIView *)view offset:(CGFloat)offset {
+    
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(self.frame), view.frame.origin.y + offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+}
+
+- (void)bottomAlignForView:(UIView *)view offset:(CGFloat)offset {
+    
+    self.frame = CGRectIntegral(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMaxY(view.frame) - CGRectGetHeight(self.frame) - offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));   
+}
+
+- (void)topAlignForForSuperViewOffset:(CGFloat)offset {
+    
+    [self topAlignForView:self.superview offset:offset];
+}
+
+- (void)bottomAlignForSuperViewOffset:(CGFloat)offset {
+
+    [self bottomAlignForView:self.superview offset:offset];
+}
+
+- (void)leftAlignForForSuperViewOffset:(CGFloat)offset {
+    
+    [self leftAlignForView:self.superview offset:offset];
+}
+
+- (void)rightAlignForSuperViewOffset:(CGFloat)offset {
+    
+    [self rightAlignForView:self.superview offset:offset];
+}
+
+- (void)topAlignForForSuperView {
+    
+    [self topAlignForView:self.superview];
+}
+
+- (void)bottomAlignForSuperView {
+    
+    [self bottomAlignForView:self.superview];    
+}
+
+- (void)leftAlignForForSuperView {
+    
+    [self leftAlignForView:self.superview];
+}
+
+- (void)rightAlignForSuperView {
+    
+    [self rightAlignForView:self.superview];
+}
+
+
+- (void)centerAlignForView:(UIView *)view {
+    
+    [self centerAlignHorizontalForView:view];
+    [self centerAlignVerticalForView:view];
+    
+}
+
+- (void)centerAlignForSuperview {
+    
+    [self centerAlignForView:self.superview];
     
 }
 
 #pragma mark -
 #pragma mark Convenience Getters
+
+- (void)setFrameSize:(CGSize)size
+{
+    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), size.width, size.height);
+}
+
+- (CGSize)frameSize
+{
+    return self.frame.size;
+}
 
 - (CGFloat)frameOriginX {
     return self.frame.origin.x;
@@ -65,19 +170,6 @@
 
 - (CGFloat)frameSizeHeight {
     return self.frame.size.height;    
-}
-
-- (void)centerAlignForView:(UIView *)view {
-    
-    [self centerAlignHorizontalForView:view];
-    [self centerAlignVerticalForView:view];
-    
-}
-
-- (void)centerAlignForSuperview {
-    
-    [self centerAlignForView:self.superview];
-    
 }
 
 #pragma mark -
