@@ -45,10 +45,11 @@
 - (CGFloat)frameSizeWidth;
 - (CGFloat)frameSizeHeight;
 - (CGSize)frameSize;
+- (CGPoint)frameOrigin;
 
 //Frame Adjustments
 - (void)setFrameSize:(CGSize)size;
-
+- (void)setFrameOrigin:(CGPoint)origin;
 - (void)setFrameOriginY:(CGFloat)y;
 - (void)setFrameOriginX:(CGFloat)x;
 - (void)setFrameSizeWidth:(CGFloat)width;

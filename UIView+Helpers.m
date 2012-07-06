@@ -146,9 +146,9 @@
 #pragma mark -
 #pragma mark Convenience Getters
 
-- (void)setFrameSize:(CGSize)size
+- (CGPoint)frameOrigin
 {
-    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), size.width, size.height);
+    return self.frame.origin;
 }
 
 - (CGSize)frameSize
@@ -174,6 +174,17 @@
 
 #pragma mark -
 #pragma mark Frame Adjustments
+
+- (void)setFrameOrigin:(CGPoint)origin
+{
+    [self setFrameOriginY:origin.y];
+    [self setFrameOriginX:origin.x];
+}
+
+- (void)setFrameSize:(CGSize)size
+{
+    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), size.width, size.height);
+}
 
 - (void)setFrameOriginY:(CGFloat)y {
     
