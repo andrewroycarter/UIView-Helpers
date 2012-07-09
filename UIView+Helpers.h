@@ -34,9 +34,9 @@
 - (void)leftAlignForForSuperView;
 - (void)rightAlignForSuperView;
 
-- (void)topAlignForForSuperViewOffset:(CGFloat)offset;
+- (void)topAlignForSuperViewOffset:(CGFloat)offset;
 - (void)bottomAlignForSuperViewOffset:(CGFloat)offset;
-- (void)leftAlignForForSuperViewOffset:(CGFloat)offset;
+- (void)leftAlignForSuperViewOffset:(CGFloat)offset;
 - (void)rightAlignForSuperViewOffset:(CGFloat)offset;
 
 //Convenience Getters

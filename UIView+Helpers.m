@@ -91,44 +91,44 @@
     self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMaxY(view.frame) - CGRectGetHeight(self.frame) - offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));   
 }
 
-- (void)topAlignForForSuperViewOffset:(CGFloat)offset {
+- (void)topAlignForSuperViewOffset:(CGFloat)offset {
     
-    [self topAlignForView:self.superview offset:offset];
+    self.frameOriginY = offset;
 }
 
 - (void)bottomAlignForSuperViewOffset:(CGFloat)offset {
     
-    [self bottomAlignForView:self.superview offset:offset];
+    self.frameOriginY = self.superview.frameSizeHeight - self.frameSizeHeight - offset;
 }
 
-- (void)leftAlignForForSuperViewOffset:(CGFloat)offset {
+- (void)leftAlignForSuperViewOffset:(CGFloat)offset {
     
-    [self leftAlignForView:self.superview offset:offset];
+    self.frameOriginX = offset;
 }
 
 - (void)rightAlignForSuperViewOffset:(CGFloat)offset {
     
-    [self rightAlignForView:self.superview offset:offset];
+    self.frameOriginX = self.superview.frameSizeWidth - self.frameSizeWidth - offset;
 }
 
 - (void)topAlignForForSuperView {
     
-    [self topAlignForView:self.superview];
+    [self topAlignForSuperViewOffset:0];
 }
 
 - (void)bottomAlignForSuperView {
     
-    [self bottomAlignForView:self.superview];    
+    [self bottomAlignForSuperViewOffset:0];
 }
 
 - (void)leftAlignForForSuperView {
     
-    [self leftAlignForView:self.superview];
+    [self leftAlignForSuperViewOffset:0];
 }
 
 - (void)rightAlignForSuperView {
     
-    [self rightAlignForView:self.superview];
+    [self rightAlignForSuperViewOffset:0];
 }
 
 
