@@ -29,9 +29,9 @@
 - (void)centerAlignHorizontalForSuperView;
 - (void)centerAlignVerticalForSuperView;
 
-- (void)topAlignForForSuperView;
+- (void)topAlignForSuperView;
 - (void)bottomAlignForSuperView;
-- (void)leftAlignForForSuperView;
+- (void)leftAlignForSuperView;
 - (void)rightAlignForSuperView;
 
 - (void)topAlignForSuperViewOffset:(CGFloat)offset;

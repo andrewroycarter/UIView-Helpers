@@ -111,7 +111,7 @@
     self.frameOriginX = self.superview.frameSizeWidth - self.frameSizeWidth - offset;
 }
 
-- (void)topAlignForForSuperView {
+- (void)topAlignForSuperView {
     
     [self topAlignForSuperViewOffset:0];
 }
@@ -121,7 +121,7 @@
     [self bottomAlignForSuperViewOffset:0];
 }
 
-- (void)leftAlignForForSuperView {
+- (void)leftAlignForSuperView {
     
     [self leftAlignForSuperViewOffset:0];
 }
