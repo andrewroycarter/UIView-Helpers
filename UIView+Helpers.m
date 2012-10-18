@@ -5,9 +5,11 @@
 
 #import "UIView+Helpers.h"
 
+#ifdef QUARTZCORE_H
 #import <QuartzCore/QuartzCore.h>
+#endif
 
-#define CGRectRound( rect ) CGRectIntegral(CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height))
+CGRect CGRectRound( CGRect rect );
 
 @implementation UIView (Helpers)
 
@@ -49,15 +51,16 @@
 
 - (void)centerAlignForSuperviewOffset:(CGPoint)offset
 {
-    [self centerAlignForView:self.superview offset:offset];
+    [self centerAlignHorizontalForView:self.superview offset:offset.x];
+    [self centerAlignVerticalForView:self.superview offset:offset.y];
 }
 
-- (void)centerAlignHorizontalForSuperView:(CGFloat)offset
+- (void)centerAlignHorizontalForSuperViewOffset:(CGFloat)offset
 {
     [self centerAlignHorizontalForView:self.superview offset:offset];
 }
 
-- (void)centerAlignVerticalForSuperView:(CGFloat)offset
+- (void)centerAlignVerticalForSuperViewOffset:(CGFloat)offset
 {
     [self centerAlignVerticalForView:self.superview offset:offset];
 }
@@ -324,6 +327,9 @@
     
 }
 
+#ifdef QUARTZCORE_H
+
+
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight
 {
     UIImage *mask = createRoundedCornerMask(self.bounds, topLeft, topRight, bottomLeft, bottomRight);
@@ -374,6 +380,13 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     CGImageRelease(bitmapContext);
     
     return mask;
-}  
+}
+
+#endif
 
 @end
+
+CGRect CGRectRound( CGRect rect )
+{
+    return CGRectIntegral(CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height));
+}

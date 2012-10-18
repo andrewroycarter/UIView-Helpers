@@ -22,6 +22,10 @@
 - (void)centerAlignHorizontalForSuperView;
 - (void)centerAlignVerticalForSuperView;
 
+- (void)centerAlignForSuperviewOffset:(CGPoint)offset;
+- (void)centerAlignHorizontalForSuperViewOffset:(CGFloat)offset;
+- (void)centerAlignVerticalForSuperViewOffset:(CGFloat)offset;
+
 - (void)leftAlignForView:(UIView *)view;
 - (void)rightAlignForView:(UIView *)view;
 - (void)topAlignForView:(UIView *)view;
@@ -72,8 +76,12 @@
 //Resizing
 - (void)setFrameSizeToImageSize;
 
+#ifdef QUARTZCORE_H
 //Making rounded corners
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight;
 static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, CGFloat radius_tr, CGFloat radius_bl, CGFloat radius_br);
+
+#endif
+
 
 @end
