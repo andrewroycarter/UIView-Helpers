@@ -13,7 +13,14 @@
 //Alignment
 - (void)centerAlignHorizontalForView:(UIView *)view;
 - (void)centerAlignVerticalForView:(UIView *)view;
+
+- (void)centerAlignHorizontalForView:(UIView *)view offset:(CGFloat)offset;
+- (void)centerAlignVerticalForView:(UIView *)view offset:(CGFloat)offset;
 - (void)centerAlignForView:(UIView *)view;
+
+- (void)centerAlignForSuperview;
+- (void)centerAlignHorizontalForSuperView;
+- (void)centerAlignVerticalForSuperView;
 
 - (void)leftAlignForView:(UIView *)view;
 - (void)rightAlignForView:(UIView *)view;
@@ -24,10 +31,6 @@
 - (void)rightAlignForView:(UIView *)view offset:(CGFloat)offset;
 - (void)topAlignForView:(UIView *)view offset:(CGFloat)offset;
 - (void)bottomAlignForView:(UIView *)view offset:(CGFloat)offset;
-
-- (void)centerAlignForSuperview;
-- (void)centerAlignHorizontalForSuperView;
-- (void)centerAlignVerticalForSuperView;
 
 - (void)topAlignForSuperView;
 - (void)bottomAlignForSuperView;
