@@ -14,7 +14,7 @@ This project is CocoaPods aware!
 Be sure to add this project to your `Podfile` by adding the line below:
 
 ```
-  pod 'UIView-Helpers',  :git => 'git@github.com:andrewroycarter/UIView-Helpers.git', :tag => '1.0.5'
+  pod 'UIView-Helpers',  :git => 'git@github.com:andrewroycarter/UIView-Helpers.git', :tag => '1.0.7'
 ```
 And then rerun:
 
