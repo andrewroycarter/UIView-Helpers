@@ -479,6 +479,22 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return mask;
 }
 
+- (UIImageView*)createSnapshot
+{
+    UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
+    
+    CGContextTranslateCTM(UIGraphicsGetCurrentContext(), -[self bounds].origin.x, -[self bounds].origin.y);
+    
+    [[self layer] renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    UIImageView *snapshot = [[UIImageView alloc] initWithImage:image];
+    [snapshot setFrame:self.frame];
+    
+    return snapshot;
+}
+
 - (void)showDebugFrame
 {
     self.layer.borderColor = [[UIColor redColor] CGColor];
