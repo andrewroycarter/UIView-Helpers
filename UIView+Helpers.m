@@ -7,7 +7,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#define CGRectRound( rect ) CGRectIntegral(CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height))
+#define CGRectRound( rect ) CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height)
 
 @implementation UIView (Helpers)
 
@@ -477,6 +477,12 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     CGImageRelease(bitmapContext);
     
     return mask;
-}  
+}
+
+- (void)showDebugFrame
+{
+    self.layer.borderColor = [[UIColor redColor] CGColor];
+    self.layer.borderWidth = 1.0f;
+}
 
 @end

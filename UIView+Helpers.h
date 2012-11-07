@@ -106,4 +106,8 @@ andReferenceIsSuperView:(BOOL)isReferenceSuperView;
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight;
 static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, CGFloat radius_tr, CGFloat radius_bl, CGFloat radius_br);
 
+
+// Debug
+- (void)showDebugFrame;
+
 @end
