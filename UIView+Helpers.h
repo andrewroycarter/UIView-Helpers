@@ -7,10 +7,40 @@
 
 @interface UIView (Helpers)
 
+enum {
+    UIViewAlignmentLeft = 1 << 0,
+    UIViewAlignmentRight = 1 << 1,
+    UIViewAlignmentTop = 1 << 2,
+    UIViewAlignmentBottom = 1 << 3,
+    
+    UIViewAlignmentLeftEdge = 1 << 5,
+    UIViewAlignmentRightEdge = 1 << 6,
+    UIViewAlignmentTopEdge = 1 << 7,
+    UIViewAlignmentBottomEdge = 1 << 8,
+    
+    UIViewAlignmentHorizontalCenter = 1 << 9,
+    UIViewAlignmentVerticalCenter = 1 << 10,
+};
+typedef NSUInteger UIViewAlignment;
+
++ (CGRect) alignRect:(CGRect)startingRect
+              toRect:(CGRect)referenceRect
+       withAlignment:(UIViewAlignment)alignment
+              insets:(UIEdgeInsets)insets
+andReferenceIsSuperView:(BOOL)isReferenceSuperView;
+
 // Init
 - (id)initWithSize:(CGSize)size;
 
 //Alignment
+- (void)alignRelativeToView:(UIView*)alignView 
+              withAlignment:(UIViewAlignment)alignment 
+                  andInsets:(UIEdgeInsets)insets;
+
+- (void)alignRelativeToSuperView:(UIView*)alignView 
+                   withAlignment:(UIViewAlignment)alignment 
+                       andInsets:(UIEdgeInsets)insets;
+
 - (void)centerAlignHorizontalForView:(UIView *)view;
 - (void)centerAlignVerticalForView:(UIView *)view;
 

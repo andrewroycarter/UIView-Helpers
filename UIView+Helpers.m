@@ -24,6 +24,114 @@
     return self;
 }
 
++ (CGRect) alignRect:(CGRect)startingRect toRect:(CGRect)referenceRect withAlignment:(UIViewAlignment)alignment insets:(UIEdgeInsets)insets andReferenceIsSuperView:(BOOL)isReferenceSuperView
+{
+    CGRect newRect = startingRect;
+    
+    // X alignments
+    if (alignment & UIViewAlignmentLeft)
+    {
+        newRect.origin.x += CGRectGetMinX(referenceRect) - (CGRectGetWidth(startingRect) + insets.right);
+    }
+    else if (alignment & UIViewAlignmentRight)
+    {
+        newRect.origin.x = CGRectGetMaxX(referenceRect) + insets.left;
+    }
+    else if (alignment & UIViewAlignmentLeftEdge)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.x = insets.left;
+        }
+        else
+        {
+            newRect.origin.x = referenceRect.origin.x + insets.left;
+        }
+    }
+    else if (alignment & UIViewAlignmentRightEdge)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.x = CGRectGetWidth(referenceRect) - (CGRectGetWidth(startingRect) + insets.right);
+        }
+        else
+        {
+            newRect.origin.x = CGRectGetMaxX(referenceRect) - (CGRectGetWidth(startingRect) + insets.right);
+        }
+    }
+    else if (alignment & UIViewAlignmentHorizontalCenter)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.x = (((CGRectGetWidth(referenceRect) - CGRectGetWidth(startingRect))) / 2.0f);
+        }
+        else
+        {
+            newRect.origin.x = CGRectGetMinX(referenceRect) +
+            (((CGRectGetWidth(referenceRect) - CGRectGetWidth(startingRect))) / 2.0f);
+        }
+    }
+    
+    // Y alignments
+    if (alignment & UIViewAlignmentTop)
+    {
+        newRect.origin.y = CGRectGetMinY(referenceRect) - (CGRectGetHeight(startingRect) + insets.bottom);
+    }
+    else if (alignment & UIViewAlignmentBottom)
+    {
+        newRect.origin.y = CGRectGetMaxY(referenceRect) + insets.top;
+    }
+    else if (alignment & UIViewAlignmentBottomEdge)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.y = CGRectGetHeight(referenceRect) - (CGRectGetHeight(startingRect) + insets.bottom);
+        }
+        else
+        {
+            newRect.origin.y = CGRectGetMaxY(referenceRect) - (CGRectGetHeight(startingRect) + insets.bottom);
+        }
+    }
+    else if (alignment & UIViewAlignmentTopEdge)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.y = insets.top;
+        }
+        else
+        {
+            newRect.origin.y = CGRectGetMinY(referenceRect) + insets.top;
+        }
+    }
+    else if (alignment & UIViewAlignmentVerticalCenter)
+    {
+        if (isReferenceSuperView)
+        {
+            newRect.origin.y = ((CGRectGetHeight(referenceRect) - CGRectGetHeight(startingRect)) / 2.0f) + insets.top - insets.bottom;
+        }
+        else
+        {
+
+            newRect.origin.y = CGRectGetMinY(referenceRect) +
+            ((CGRectGetHeight(referenceRect) - CGRectGetHeight(startingRect)) / 2.0f) + insets.top - insets.bottom;
+        }
+    }
+    
+    return CGRectIntegral(newRect);
+
+}
+
+- (void)alignRelativeToView:(UIView*)alignView withAlignment:(UIViewAlignment)alignment andInsets:(UIEdgeInsets)insets
+{
+    self.frame = [UIView alignRect:self.frame toRect:alignView.frame withAlignment:alignment insets:insets andReferenceIsSuperView:NO];
+}
+
+- (void)alignRelativeToSuperView:(UIView*)alignView withAlignment:(UIViewAlignment)alignment andInsets:(UIEdgeInsets)insets
+{
+    self.frame = [UIView alignRect:self.frame toRect:alignView.frame withAlignment:alignment insets:insets andReferenceIsSuperView:YES];
+}
+
+
 #pragma mark -
 #pragma mark Alignment
 
@@ -45,11 +153,6 @@
 - (void)centerAlignVerticalForSuperView
 {
     [self centerAlignVerticalForView:self.superview];
-}
-
-- (void)centerAlignForSuperviewOffset:(CGPoint)offset
-{
-    [self centerAlignForView:self.superview offset:offset];
 }
 
 - (void)centerAlignHorizontalForSuperView:(CGFloat)offset
