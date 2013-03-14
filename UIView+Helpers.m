@@ -7,7 +7,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height); }
+static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect.origin.x, (NSInteger)rect.origin.y, (NSInteger)rect.size.width, (NSInteger)rect.size.height); }
 
 @implementation UIView (Helpers)
 
