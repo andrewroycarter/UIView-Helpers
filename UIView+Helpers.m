@@ -7,7 +7,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#define CGRectRound( rect ) CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height)
+static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((int)rect.origin.x, (int)rect.origin.y, (int)rect.size.width, (int)rect.size.height); }
 
 @implementation UIView (Helpers)
 
@@ -16,15 +16,15 @@
 
 - (id)initWithSize:(CGSize)size
 {
-    if ((self = [self init]))
+    self = [self init];
+    if (self)
     {
         [self setFrameSize:size];
     }
-    
     return self;
 }
 
-+ (CGRect) alignRect:(CGRect)startingRect toRect:(CGRect)referenceRect withAlignment:(UIViewAlignment)alignment insets:(UIEdgeInsets)insets andReferenceIsSuperView:(BOOL)isReferenceSuperView
++ (CGRect)alignRect:(CGRect)startingRect toRect:(CGRect)referenceRect withAlignment:(UIViewAlignment)alignment insets:(UIEdgeInsets)insets andReferenceIsSuperView:(BOOL)isReferenceSuperView
 {
     CGRect newRect = startingRect;
     
@@ -111,24 +111,32 @@
         }
         else
         {
-
+            
             newRect.origin.y = CGRectGetMinY(referenceRect) +
             ((CGRectGetHeight(referenceRect) - CGRectGetHeight(startingRect)) / 2.0f) + insets.top - insets.bottom;
         }
     }
     
     return CGRectIntegral(newRect);
-
+    
 }
 
 - (void)alignRelativeToView:(UIView*)alignView withAlignment:(UIViewAlignment)alignment andInsets:(UIEdgeInsets)insets
 {
-    self.frame = [UIView alignRect:self.frame toRect:alignView.frame withAlignment:alignment insets:insets andReferenceIsSuperView:NO];
+    [self setFrame:[UIView alignRect:[self frame]
+                              toRect:[alignView frame]
+                       withAlignment:alignment
+                              insets:insets
+             andReferenceIsSuperView:NO]];
 }
 
 - (void)alignRelativeToSuperView:(UIView*)alignView withAlignment:(UIViewAlignment)alignment andInsets:(UIEdgeInsets)insets
 {
-    self.frame = [UIView alignRect:self.frame toRect:alignView.frame withAlignment:alignment insets:insets andReferenceIsSuperView:YES];
+    [self setFrame:[UIView alignRect:[self frame]
+                              toRect:[alignView frame]
+                       withAlignment:alignment
+                              insets:insets
+             andReferenceIsSuperView:YES]];
 }
 
 
@@ -147,32 +155,32 @@
 
 - (void)centerAlignHorizontalForSuperView
 {
-    [self centerAlignHorizontalForView:self.superview];
+    [self centerAlignHorizontalForView:[self superview]];
 }
 
 - (void)centerAlignVerticalForSuperView
 {
-    [self centerAlignVerticalForView:self.superview];
+    [self centerAlignVerticalForView:[self superview]];
 }
 
 - (void)centerAlignHorizontalForSuperView:(CGFloat)offset
 {
-    [self centerAlignHorizontalForView:self.superview offset:offset];
+    [self centerAlignHorizontalForView:[self superview] offset:offset];
 }
 
 - (void)centerAlignVerticalForSuperView:(CGFloat)offset
 {
-    [self centerAlignVerticalForView:self.superview offset:offset];
+    [self centerAlignVerticalForView:[self superview] offset:offset];
 }
 
 - (void)centerAlignHorizontalForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake((CGRectGetWidth(view.frame) / 2.0f) - (CGRectGetWidth(self.frame) / 2.0f) + offset, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake((CGRectGetWidth([view frame]) / 2.0f) - (CGRectGetWidth([self frame]) / 2.0f) + offset, CGRectGetMinY([self frame]), CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)centerAlignVerticalForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), (CGRectGetHeight(view.frame) / 2.0f) - (CGRectGetHeight(self.frame) / 2.0f) + offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), (CGRectGetHeight([view frame]) / 2.0f) - (CGRectGetHeight([self frame]) / 2.0f) + offset, CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)leftAlignForView:(UIView *)view
@@ -197,42 +205,42 @@
 
 - (void)leftAlignForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(view.frame) + offset, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([view frame]) + offset, CGRectGetMinY([self frame]), CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)rightAlignForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMaxX(view.frame) - CGRectGetWidth(self.frame) - offset, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMaxX([view frame]) - CGRectGetWidth([self frame]) - offset, CGRectGetMinY([self frame]), CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)topAlignForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), view.frame.origin.y + offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), [view frame].origin.y + offset, CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)bottomAlignForView:(UIView *)view offset:(CGFloat)offset
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMaxY(view.frame) - CGRectGetHeight(self.frame) - offset, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), CGRectGetMaxY([view frame]) - CGRectGetHeight([self frame]) - offset, CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)topAlignForSuperViewOffset:(CGFloat)offset
 {
-    self.frameOriginY = offset;
+    [self setFrameOriginY:offset];
 }
 
 - (void)bottomAlignForSuperViewOffset:(CGFloat)offset
 {
-    self.frameOriginY = self.superview.frameSizeHeight - self.frameSizeHeight - offset;
+    [self setFrameOriginY:[[self superview] frameSizeHeight] - [self frameSizeHeight] - offset];
 }
 
 - (void)leftAlignForSuperViewOffset:(CGFloat)offset
 {
-    self.frameOriginX = offset;
+    [self setFrameOriginX:offset];
 }
 
 - (void)rightAlignForSuperViewOffset:(CGFloat)offset
 {
-    self.frameOriginX = self.superview.frameSizeWidth - self.frameSizeWidth - offset;
+    [self setFrameOriginX:[[self superview] frameSizeWidth] - [self frameSizeWidth] - offset];
 }
 
 - (void)topAlignForSuperView {
@@ -265,7 +273,7 @@
 
 - (void)centerAlignForSuperview
 {
-    [self centerAlignForView:self.superview];
+    [self centerAlignForView:[self superview]];
 }
 
 #pragma mark -
@@ -273,32 +281,32 @@
 
 - (CGPoint)frameOrigin
 {
-    return self.frame.origin;
+    return [self frame].origin;
 }
 
 - (CGSize)frameSize
 {
-    return self.frame.size;
+    return [self frame].size;
 }
 
 - (CGFloat)frameOriginX
 {
-    return self.frame.origin.x;
+    return [self frame].origin.x;
 }
 
 - (CGFloat)frameOriginY
 {
-    return self.frame.origin.y;
+    return [self frame].origin.y;
 }
 
 - (CGFloat)frameSizeWidth
 {
-    return self.frame.size.width;
+    return [self frame].size.width;
 }
 
 - (CGFloat)frameSizeHeight
 {
-    return self.frame.size.height;    
+    return [self frame].size.height;
 }
 
 #pragma mark -
@@ -312,82 +320,82 @@
 
 - (void)setFrameSize:(CGSize)size
 {
-    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), size.width, size.height);
+    [self setFrame:CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), size.width, size.height)];
 }
 
 - (void)setFrameOriginY:(CGFloat)y
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), y, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), y, CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)setFrameOriginX:(CGFloat)x
 {
-    self.frame = CGRectRound(CGRectMake((int)x, (int)CGRectGetMinY(self.frame), (int)CGRectGetWidth(self.frame), (int)CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(x, CGRectGetMinY([self frame]), CGRectGetWidth([self frame]), CGRectGetHeight([self frame])))];
 }
 
 - (void)setFrameSizeWidth:(CGFloat)width
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), width, CGRectGetHeight(self.frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), width, CGRectGetHeight([self frame])))];
 }
 
 - (void)setFrameSizeHeight:(CGFloat)height
 {
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), height));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), CGRectGetWidth([self frame]), height))];
 }
 
 #pragma mark -
 #pragma mark Positioning Relative to View
 
-- (void)setFrameOriginYBelowView:(UIView *)view {
-    
+- (void)setFrameOriginYBelowView:(UIView *)view
+{
     [self setFrameOriginYBelowView:view offset:0];
 }
 
-- (void)setFrameOriginYAboveView:(UIView *)view {
-    
+- (void)setFrameOriginYAboveView:(UIView *)view
+{
     [self setFrameOriginYAboveView:view offset:0];
 }
 
-- (void)setFrameOriginXRightOfView:(UIView *)view {
-    
+- (void)setFrameOriginXRightOfView:(UIView *)view
+{
     [self setFrameOriginXRightOfView:view offset:0];
 }
 
-- (void)setFrameOriginXLeftOfView:(UIView *)view {
-    
+- (void)setFrameOriginXLeftOfView:(UIView *)view
+{
     [self setFrameOriginXLeftOfView:view offset:0];
 }
 
 - (void)setFrameOriginYBelowView:(UIView *)view offset:(CGFloat)offset
 {
-    CGRect frame = self.frame;
-    CGRect viewFrame = view.frame;
+    CGRect frame = [self frame];
+    CGRect viewFrame = [view frame];
     
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(frame), CGRectGetMaxY(viewFrame) + offset, CGRectGetWidth(frame), CGRectGetHeight(frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX(frame), CGRectGetMaxY(viewFrame) + offset, CGRectGetWidth(frame), CGRectGetHeight(frame)))];
 }
 
 - (void)setFrameOriginYAboveView:(UIView *)view offset:(CGFloat)offset
 {
-    CGRect frame = self.frame;
-    CGRect viewFrame = view.frame;
+    CGRect frame = [self frame];
+    CGRect viewFrame = [view frame];
     
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(viewFrame) - CGRectGetHeight(self.frame) - offset, CGRectGetWidth(frame), CGRectGetHeight(frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(viewFrame) - CGRectGetHeight([self frame]) - offset, CGRectGetWidth(frame), CGRectGetHeight(frame)))];
 }
 
 - (void)setFrameOriginXRightOfView:(UIView *)view offset:(CGFloat)offset
 {
-    CGRect frame = self.frame;
-    CGRect viewFrame = view.frame;
+    CGRect frame = [self frame];
+    CGRect viewFrame = [view frame];
     
-    self.frame = CGRectRound(CGRectMake(CGRectGetMaxX(viewFrame) + offset, CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMaxX(viewFrame) + offset, CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)))];
 }
 
 - (void)setFrameOriginXLeftOfView:(UIView *)view offset:(CGFloat)offset
 {
-    CGRect frame = self.frame;
-    CGRect viewFrame = view.frame;
+    CGRect frame = [self frame];
+    CGRect viewFrame = [view frame];
     
-    self.frame = CGRectRound(CGRectMake(CGRectGetMinX(viewFrame) - CGRectGetWidth(frame) - offset, CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)));
+    [self setFrame:CGRectRound(CGRectMake(CGRectGetMinX(viewFrame) - CGRectGetWidth(frame) - offset, CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame)))];
 }
 
 #pragma mark -
@@ -399,41 +407,33 @@
     {
         UIImage *image = [(UIButton *)self imageForState:UIControlStateNormal];
         
-        if (!image) {
-            
+        if (!image)
+        {
             image = [(UIButton *)self backgroundImageForState:UIControlStateNormal];
-            
         }
         
-        if (!image) {
-            
-            return;
-            
+        if (image)
+        {
+            [self setFrame:CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), [image size].width, [image size].height)];
         }
-        
-        self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), image.size.width, image.size.height);
-        
     }
     else if ([self isKindOfClass:[UIImageView class]])
     {
-        
         UIImage *image = [(UIImageView *)self image];
-        
-        if (!image)
-            return;
-        
-        self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), image.size.width, image.size.height);
+        if (image)
+        {
+        [self setFrame:CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), [image size].width, [image size].height)];
+        }
     }
-    
 }
 
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight
 {
-    UIImage *mask = createRoundedCornerMask(self.bounds, topLeft, topRight, bottomLeft, bottomRight);
+    UIImage *mask = createRoundedCornerMask([self bounds], topLeft, topRight, bottomLeft, bottomRight);
     CALayer *layerMask = [CALayer layer];
-    layerMask.frame = self.bounds;       
-    layerMask.contents = (id)mask.CGImage;       
-    self.layer.mask = layerMask;
+    [layerMask setFrame:[self bounds]];
+    [layerMask setContents:(id)[mask CGImage]];
+    [[self layer] setMask:layerMask];
 }
 
 static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, CGFloat radius_tr, CGFloat radius_bl, CGFloat radius_br)
@@ -445,10 +445,12 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     
     context = CGBitmapContextCreate( NULL, rect.size.width, rect.size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast );
     
-    CGColorSpaceRelease(colorSpace);    
+    CGColorSpaceRelease(colorSpace);
     
     if ( context == NULL )
+    {
         return NULL;
+    }
     
     CGFloat minx = CGRectGetMinX( rect ), midx = CGRectGetMidX( rect ), maxx = CGRectGetMaxX( rect );
     CGFloat miny = CGRectGetMinY( rect ), midy = CGRectGetMidY( rect ), maxy = CGRectGetMaxY( rect );
@@ -490,15 +492,21 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     UIGraphicsEndImageContext();
     
     UIImageView *snapshot = [[UIImageView alloc] initWithImage:image];
-    [snapshot setFrame:self.frame];
+    [snapshot setFrame:[self frame]];
     
     return snapshot;
 }
 
 - (void)showDebugFrame
 {
-    self.layer.borderColor = [[UIColor redColor] CGColor];
-    self.layer.borderWidth = 1.0f;
+    [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
+    [[self layer] setBorderWidth:1.0f];
+}
+
+- (void)hideDebugFrame
+{
+    [[self layer] setBorderColor:nil];
+    [[self layer] setBorderWidth:0.0f];
 }
 
 @end

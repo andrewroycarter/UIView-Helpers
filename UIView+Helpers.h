@@ -7,7 +7,8 @@
 
 @interface UIView (Helpers)
 
-enum {
+typedef NS_ENUM(NSUInteger, UIViewAlignment)
+{
     UIViewAlignmentLeft = 1 << 0,
     UIViewAlignmentRight = 1 << 1,
     UIViewAlignmentTop = 1 << 2,
@@ -21,12 +22,11 @@ enum {
     UIViewAlignmentHorizontalCenter = 1 << 9,
     UIViewAlignmentVerticalCenter = 1 << 10,
 };
-typedef NSUInteger UIViewAlignment;
 
-+ (CGRect) alignRect:(CGRect)startingRect
-              toRect:(CGRect)referenceRect
-       withAlignment:(UIViewAlignment)alignment
-              insets:(UIEdgeInsets)insets
++ (CGRect)alignRect:(CGRect)startingRect
+             toRect:(CGRect)referenceRect
+      withAlignment:(UIViewAlignment)alignment
+             insets:(UIEdgeInsets)insets
 andReferenceIsSuperView:(BOOL)isReferenceSuperView;
 
 // Init
@@ -111,5 +111,6 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 
 // Debug
 - (void)showDebugFrame;
+- (void)hideDebugFrame;
 
 @end
