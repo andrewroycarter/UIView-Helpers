@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.license      = "MIT"
   s.authors      = { "Trung Tran" => "trung.tran@willowtreeapps.com", "Andrew Roy Carter" => "andrew.carter@willowtreeapps.com" }
   s.source       = { :git => "https://github.com/andrewroycarter/UIView-Helpers.git", :tag => '1.1.0' }
-  s.framework    = 'QuartzCore'
+  s.framework    = 'QuartzCore', 'UIKit'
   s.prefix_header_contents = "#import <QuartzCore/QuartzCore.h>"
   s.source_files = '*.{h,m}'
 end
