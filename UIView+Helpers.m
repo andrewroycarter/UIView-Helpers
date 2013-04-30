@@ -422,7 +422,7 @@ static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect
         UIImage *image = [(UIImageView *)self image];
         if (image)
         {
-        [self setFrame:CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), [image size].width, [image size].height)];
+            [self setFrame:CGRectMake(CGRectGetMinX([self frame]), CGRectGetMinY([self frame]), [image size].width, [image size].height)];
         }
     }
 }
@@ -434,6 +434,56 @@ static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect
     [layerMask setFrame:[self bounds]];
     [layerMask setContents:(id)[mask CGImage]];
     [[self layer] setMask:layerMask];
+}
+
+- (void)setVerticalFadeMaskWithTopOffset:(CGFloat)topOffset bottomOffset:(CGFloat)bottomOffset
+{
+    CAGradientLayer *maskLayer = [CAGradientLayer layer];
+    
+    UIColor *outerColor = [UIColor colorWithWhite:0.0f alpha:0.0f];
+    UIColor *innerColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
+    [maskLayer setColors:@[
+     (id)[outerColor CGColor],
+     (id)[innerColor CGColor],
+     (id)[innerColor CGColor],
+     (id)[outerColor CGColor]
+     ]];
+    [maskLayer setLocations:@[
+     @(0.0f),
+     @(topOffset),
+     @(1.0f - bottomOffset),
+     @(1.0f)
+     ]];
+    [maskLayer setStartPoint:CGPointMake(0.5f, 1.0f)];
+    [maskLayer setEndPoint:CGPointMake(0.5f, 0.0f)];
+    [maskLayer setBounds:[self bounds]];
+    [maskLayer setAnchorPoint:CGPointZero];
+    [[self layer] setMask:maskLayer];
+}
+
+- (void)setHorizontalFadeMaskWithLeftOffset:(CGFloat)leftOffset rightOffset:(CGFloat)rightOffset
+{
+    CAGradientLayer *maskLayer = [CAGradientLayer layer];
+    
+    UIColor *outerColor = [UIColor colorWithWhite:0.0f alpha:0.0f];
+    UIColor *innerColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
+    [maskLayer setColors:@[
+     (id)[outerColor CGColor],
+     (id)[innerColor CGColor],
+     (id)[innerColor CGColor],
+     (id)[outerColor CGColor]
+     ]];
+    [maskLayer setLocations:@[
+     @(0.0f),
+     @(leftOffset),
+     @(1.0f - rightOffset),
+     @(1.0f)
+     ]];
+    [maskLayer setStartPoint:CGPointMake(0.0f, 0.5f)];
+    [maskLayer setEndPoint:CGPointMake(1.0f, 0.5f)];
+    [maskLayer setBounds:[self bounds]];
+    [maskLayer setAnchorPoint:CGPointZero];
+    [[self layer] setMask:maskLayer];
 }
 
 static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, CGFloat radius_tr, CGFloat radius_bl, CGFloat radius_br)
@@ -481,7 +531,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return mask;
 }
 
-- (UIImageView*)createSnapshot
+- (UIImageView *)createSnapshot
 {
     UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
     
