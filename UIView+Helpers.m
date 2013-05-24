@@ -559,4 +559,135 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     [[self layer] setBorderWidth:0.0f];
 }
 
+#pragma mark -
+#pragma mark LayoutHelpers
+
+- (BOOL)isViewVisible {
+    BOOL isViewHidden = self.isHidden || self.alpha == 0 || CGRectIsEmpty(self.frame);
+    return !isViewHidden;
+}
+
++ (CGFloat)alignVertical:(VerticalLayoutType)type
+                   views:(NSArray*)views
+             withSpacing:(CGFloat)spacing
+                  inView:(UIView*)view
+      shrinkSpacingToFit:(BOOL)shrinkSpacingToFit
+{
+    __block CGFloat height = 0;
+    __block int numVisibleViews = 0;
+    
+    if (type == VerticalLayoutTypeCenter || (shrinkSpacingToFit && spacing > 0))
+    {
+        [views enumerateObjectsUsingBlock:^(UIView* obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isViewVisible]) {
+                height += [obj frameSizeHeight] + ((idx > 0) ? spacing : 0);
+                numVisibleViews += 1;
+            }
+        }];
+        
+        if (numVisibleViews == 0) {
+            return 0;
+        }
+        
+        if (shrinkSpacingToFit && height > [view frameSizeHeight]) {
+            CGFloat d = (height - [view frameSizeHeight]) / (CGFloat)(numVisibleViews-1);
+            d  = MIN(spacing, d);
+            spacing -= d;
+            height -= (d * (CGFloat)(numVisibleViews-1));
+        }
+    }
+    
+    __block CGFloat y = 0;
+    if (type == VerticalLayoutTypeCenter) {
+        y = ([view frameSizeHeight] - height) * 0.5;
+    } else if (type == VerticalLayoutTypeBottom) {
+        y = [view frameSizeHeight];
+    }
+    
+    CGFloat startY = y;
+    [views enumerateObjectsWithOptions:(type == VerticalLayoutTypeBottom ? NSEnumerationReverse : 0)
+                            usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                                
+                                if (type == VerticalLayoutTypeBottom) {
+                                    CGFloat height = [obj frameSizeHeight];
+                                    [obj setFrameOriginY: y-height];
+                                    if ([obj isViewVisible]) {
+                                        y -= height+spacing;
+                                    }
+                                } else {
+                                    [obj setFrameOriginY:y];
+                                    if ([obj isViewVisible]) {
+                                        y += [obj frameSizeHeight]+spacing;
+                                    }
+                                }
+                            }];
+    
+    CGFloat ret = ABS(y - startY)-spacing;
+    return ret;
+}
+
++ (CGFloat)alignVertical:(VerticalLayoutType)type
+                   views:(NSArray*)views
+        withSpacingArray:(NSArray*)spacing
+                  inView:(UIView*)view
+      shrinkSpacingToFit:(BOOL)shrinkSpacingToFit
+{
+    __block CGFloat height = 0;
+    __block int numVisibleViews = 0;
+    CGFloat spacingModifier = 0;
+    
+    if (type == VerticalLayoutTypeCenter || (shrinkSpacingToFit && spacing > 0))
+    {
+        __block CGFloat totalSpacing = 0;
+        [views enumerateObjectsUsingBlock:^(UIView* obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isViewVisible]) {
+                CGFloat space = ((idx > 0 && idx-1 < spacing.count) ? [spacing[idx-1] floatValue] : 0);
+                totalSpacing += space;
+                height += [obj frameSizeHeight] + space;
+                numVisibleViews += 1;
+            }
+        }];
+        
+        if (numVisibleViews == 0) {
+            return 0;
+        }
+        
+        if (shrinkSpacingToFit && height > [view frameSizeHeight]) {
+            CGFloat d = MIN(totalSpacing, (height - [view frameSizeHeight]));
+            spacingModifier = (d / totalSpacing);
+        }
+    }
+    
+    __block CGFloat y = 0;
+    if (type == VerticalLayoutTypeCenter) {
+        y = ([view frameSizeHeight] - height) * 0.5;
+    } else if (type == VerticalLayoutTypeBottom) {
+        y = [view frameSizeHeight];
+    }
+    
+    CGFloat startY = y;
+    [views enumerateObjectsWithOptions:(type == VerticalLayoutTypeBottom ? NSEnumerationReverse : 0)
+                            usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                                
+                                CGFloat space = ((idx < spacing.count) ? [spacing[idx] floatValue] : 0);
+                                space -= (space * spacingModifier);
+                                
+                                if (type == VerticalLayoutTypeBottom) {
+                                    CGFloat height = [obj frameSizeHeight];
+                                    [obj setFrameOriginY: y-height];
+                                    if ([obj isViewVisible]) {
+                                        y -= height+space;
+                                    }
+                                } else {
+                                    [obj setFrameOriginY:y];
+                                    if ([obj isViewVisible]) {
+                                        y += [obj frameSizeHeight]+space;
+                                    }
+                                }
+                            }];
+    
+    CGFloat ret = ABS(y - startY);
+    return ret;
+}
+
 @end

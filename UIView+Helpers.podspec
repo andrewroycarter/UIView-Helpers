@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = "UIView+Helpers"
   s.platform     = :ios
-  s.version      = "1.2.0"
+  s.version      = "1.2.1"
   s.summary      = "UIView+Helpers is a collecion of methods that make laying out UIViews easier and readable."
   s.homepage     = "https://github.com/andrewroycarter/UIView-Helpers"
   s.license      = "MIT"
