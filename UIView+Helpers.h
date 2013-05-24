@@ -23,6 +23,12 @@ typedef NS_ENUM(NSUInteger, UIViewAlignment)
     UIViewAlignmentVerticalCenter = 1 << 10,
 };
 
+typedef NS_ENUM(NSInteger, VerticalLayoutType) {
+    VerticalLayoutTypeTop,
+    VerticalLayoutTypeCenter,
+    VerticalLayoutTypeBottom
+};
+
 + (CGRect)alignRect:(CGRect)startingRect
              toRect:(CGRect)referenceRect
       withAlignment:(UIViewAlignment)alignment
@@ -116,5 +122,19 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 // Debug
 - (void)showDebugFrame;
 - (void)hideDebugFrame;
+
+// Layout Helpers
+
++ (CGFloat)alignVertical:(VerticalLayoutType)type
+                   views:(NSArray*)views
+             withSpacing:(CGFloat)spacing
+                  inView:(UIView*)view
+      shrinkSpacingToFit:(BOOL)shrinkSpacingToFit;
+
++ (CGFloat)alignVertical:(VerticalLayoutType)type
+                   views:(NSArray*)views
+        withSpacingArray:(NSArray*)spacing
+                  inView:(UIView*)view
+      shrinkSpacingToFit:(BOOL)shrinkSpacingToFit;
 
 @end
