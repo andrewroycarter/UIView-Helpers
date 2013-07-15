@@ -131,6 +131,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 // Debug
 - (void)showDebugFrame;
 - (void)hideDebugFrame;
+- (void)logFrameChanges;
 
 // Layout Helpers
 + (CGFloat)alignVertical:(VerticalLayoutType)type

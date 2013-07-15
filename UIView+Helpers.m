@@ -8,6 +8,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect.origin.x, (NSInteger)rect.origin.y, (NSInteger)rect.size.width, (NSInteger)rect.size.height); }
+static NSString * const UIVIEW_HELPERS_FRAME_KVO_KEY = @"frame";
 
 @implementation UIView (Helpers)
 
@@ -576,7 +577,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     
     if ([self respondsToSelector:@selector(snapshotView)])
     {
-        snapshot = [self snapshotView];
+        snapshot = [self performSelector:@selector(snapshotView)];
     }
     
     else
@@ -585,22 +586,50 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
         snapshot = [[UIImageView alloc] initWithImage:image];
         [snapshot setFrame:[self bounds]];
     }
+    
+    return snapshot;
 }
 
 - (void)showDebugFrame
 {
-#ifdef DEBUG
-    [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
-    [[self layer] setBorderWidth:1.0f];
-#endif
+    [self performInDebug:^{
+        
+        [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
+        [[self layer] setBorderWidth:1.0f];
+        
+    }];
 }
 
 - (void)hideDebugFrame
 {
-#ifdef DEBUG
-    [[self layer] setBorderColor:nil];
-    [[self layer] setBorderWidth:0.0f];
-#endif
+    [self performInDebug:^{
+
+        [[self layer] setBorderColor:nil];
+        [[self layer] setBorderWidth:0.0f];
+        
+    }];
+}
+
+- (void)logFrameChanges
+{
+    [self performInDebug:^{
+
+        [self frameDidChange];
+        [self addObserver:self forKeyPath:UIVIEW_HELPERS_FRAME_KVO_KEY options:0 context:0];
+        
+    }];
+}
+
+- (void)frameDidChange
+{
+    [self performInDebug:^{
+
+        NSLog(@"%@", self);
+        NSLog(@"<%@: %d; frame = %@>", NSStringFromClass([self class]),
+                                    1000,
+                                    NSStringFromCGRect(self.frame));
+        
+    }];
 }
 
 #pragma mark -
@@ -776,6 +805,27 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     }
     
     return subviews;    
+}
+
+#pragma mark - 
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:UIVIEW_HELPERS_FRAME_KVO_KEY])
+    {
+        [self frameDidChange];
+    }
+}
+
+#pragma mark - 
+#pragma mark Helpers
+
+- (void)performInDebug:(void (^)(void))block
+{
+#ifdef DEBUG
+    block();
+#endif
 }
 
 @end
