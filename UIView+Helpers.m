@@ -589,14 +589,18 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 
 - (void)showDebugFrame
 {
+#ifdef DEBUG
     [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
     [[self layer] setBorderWidth:1.0f];
+#endif
 }
 
 - (void)hideDebugFrame
 {
+#ifdef DEBUG
     [[self layer] setBorderColor:nil];
     [[self layer] setBorderWidth:0.0f];
+#endif
 }
 
 #pragma mark -
