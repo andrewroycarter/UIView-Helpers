@@ -428,7 +428,7 @@ static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect
 }
 
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight
-{
+{    
     UIImage *mask = createRoundedCornerMask([self bounds], topLeft, topRight, bottomLeft, bottomRight);
     CALayer *layerMask = [CALayer layer];
     [layerMask setFrame:[self bounds]];
@@ -493,7 +493,14 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     
     colorSpace = CGColorSpaceCreateDeviceRGB();
     
-    context = CGBitmapContextCreate( NULL, rect.size.width, rect.size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast );
+    float scaleFactor = [[UIScreen mainScreen] scale];
+    context = CGBitmapContextCreate( NULL,
+                                    rect.size.width * scaleFactor,
+                                    rect.size.height * scaleFactor,
+                                    8,
+                                    rect.size.width * scaleFactor * 4,
+                                    colorSpace,
+                                    kCGImageAlphaPremultipliedLast );
     
     CGColorSpaceRelease(colorSpace);
     
@@ -501,6 +508,8 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     {
         return NULL;
     }
+    
+    CGContextScaleCTM(context, scaleFactor, scaleFactor);
     
     CGFloat minx = CGRectGetMinX( rect ), midx = CGRectGetMidX( rect ), maxx = CGRectGetMaxX( rect );
     CGFloat miny = CGRectGetMinY( rect ), midy = CGRectGetMidY( rect ), maxy = CGRectGetMaxY( rect );
