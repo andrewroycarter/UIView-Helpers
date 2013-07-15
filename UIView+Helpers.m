@@ -699,4 +699,48 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return ret;
 }
 
+#pragma mark -
+#pragma mark Subviews
+
++ (UIView *)firstResponder
+{
+    UIView *view = [[UIApplication sharedApplication] keyWindow];
+    return [view firstResponderInSubviews];
+}
+
+- (UIView *)firstResponderInSubviews
+{
+    UIView *responder;
+    
+    for (UIView *subview in [self subviews])
+    {
+        if ([subview isFirstResponder])
+            responder = subview;
+        else
+            responder = [subview firstResponderInSubviews];
+        
+        if (responder)
+            break;
+    }
+    
+    return responder;
+}
+
+- (NSArray *)subviewsOfClass:(Class)aClass recursive:(BOOL)recursive
+{
+    NSMutableArray *subviews = [@[] mutableCopy];
+    
+    for (UIView *subview in [self subviews])
+    {
+        if ([subview isKindOfClass:aClass])
+            [subviews addObject:subview];
+
+        if (recursive)
+            [subviews addObjectsFromArray:[subview subviewsOfClass:aClass recursive:YES]];
+
+    }
+    
+    return subviews;    
+}
+
 @end

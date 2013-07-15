@@ -117,14 +117,13 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 - (void)setVerticalFadeMaskWithTopOffset:(CGFloat)topOffset bottomOffset:(CGFloat)bottomOffset;
 
 // Snapshot creation
-- (UIImageView*)createSnapshot;
+- (UIImageView*)createSnapshot __deprecated;
 
 // Debug
 - (void)showDebugFrame;
 - (void)hideDebugFrame;
 
 // Layout Helpers
-
 + (CGFloat)alignVertical:(VerticalLayoutType)type
                    views:(NSArray*)views
              withSpacing:(CGFloat)spacing
@@ -136,5 +135,10 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
         withSpacingArray:(NSArray*)spacing
                   inView:(UIView*)view
       shrinkSpacingToFit:(BOOL)shrinkSpacingToFit;
+
+// subviews
++ (UIView *)firstResponder;
+- (UIView *)firstResponderInSubviews;
+- (NSArray *)subviewsOfClass:(Class)aClass recursive:(BOOL)recursive;
 
 @end
