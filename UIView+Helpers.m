@@ -7,7 +7,10 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#define nameOfVar(x) [NSString stringWithFormat:@"%s", #x]
+
 static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect.origin.x, (NSInteger)rect.origin.y, (NSInteger)rect.size.width, (NSInteger)rect.size.height); }
+static NSString * const UIVIEW_HELPERS_FRAME_KVO_KEY = @"frame";
 
 @implementation UIView (Helpers)
 
@@ -427,8 +430,10 @@ static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect
     }
 }
 
+#pragma mark - Corners and Masks
+
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight
-{
+{    
     UIImage *mask = createRoundedCornerMask([self bounds], topLeft, topRight, bottomLeft, bottomRight);
     CALayer *layerMask = [CALayer layer];
     [layerMask setFrame:[self bounds]];
@@ -493,7 +498,14 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     
     colorSpace = CGColorSpaceCreateDeviceRGB();
     
-    context = CGBitmapContextCreate( NULL, rect.size.width, rect.size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast );
+    float scaleFactor = [[UIScreen mainScreen] scale];
+    context = CGBitmapContextCreate( NULL,
+                                    rect.size.width * scaleFactor,
+                                    rect.size.height * scaleFactor,
+                                    8,
+                                    rect.size.width * scaleFactor * 4,
+                                    colorSpace,
+                                    kCGImageAlphaPremultipliedLast );
     
     CGColorSpaceRelease(colorSpace);
     
@@ -501,6 +513,8 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     {
         return NULL;
     }
+    
+    CGContextScaleCTM(context, scaleFactor, scaleFactor);
     
     CGFloat minx = CGRectGetMinX( rect ), midx = CGRectGetMidX( rect ), maxx = CGRectGetMaxX( rect );
     CGFloat miny = CGRectGetMinY( rect ), midy = CGRectGetMidY( rect ), maxy = CGRectGetMaxY( rect );
@@ -531,6 +545,8 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return mask;
 }
 
+#pragma mark - Snapshotting
+
 - (UIImageView *)createSnapshot
 {
     UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
@@ -547,10 +563,44 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return snapshot;
 }
 
+- (UIImage*)snapshotImage
+{
+    UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
+    
+    CGContextTranslateCTM(UIGraphicsGetCurrentContext(), -[self bounds].origin.x, -[self bounds].origin.y);
+    
+    [[self layer] renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+
+}
+
+- (UIView*)snapshotImageView
+{
+    UIView *snapshot;
+    
+    if ([self respondsToSelector:@selector(snapshotView)])
+    {
+        snapshot = [self performSelector:@selector(snapshotView)];
+    }
+    
+    else
+    {
+        UIImage *image = [self snapshotImage];
+        snapshot = [[UIImageView alloc] initWithImage:image];
+        [snapshot setFrame:[self bounds]];
+    }
+    
+    return snapshot;
+}
+
+#pragma mark - Debugging
+
 - (void)showDebugFrame
 {
-    [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
-    [[self layer] setBorderWidth:1.0f];
+    [self showDebugFrame:NO];
 }
 
 - (void)hideDebugFrame
@@ -559,8 +609,39 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     [[self layer] setBorderWidth:0.0f];
 }
 
-#pragma mark -
-#pragma mark LayoutHelpers
+- (void)showDebugFrame:(BOOL)showInRelease
+{
+    [self performInRelease:showInRelease
+                     block:^{
+                         [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
+                         [[self layer] setBorderWidth:1.0f];
+                     }];
+
+}
+
+- (void)logFrameChanges
+{
+    [self performInDebug:^{
+
+        [self frameDidChange];
+        [self addObserver:self forKeyPath:UIVIEW_HELPERS_FRAME_KVO_KEY options:0 context:0];
+        
+    }];
+}
+
+- (void)frameDidChange
+{
+    [self performInDebug:^{
+
+        NSLog(@"%@ <%@: %p; frame = %@>", nameOfVar(self),
+                                        NSStringFromClass([self class]),
+                                        self,
+                                        NSStringFromCGRect(self.frame));
+        
+    }];
+}
+
+#pragma mark - LayoutHelpers
 
 - (BOOL)isViewVisible {
     BOOL isViewHidden = self.isHidden || self.alpha == 0 || CGRectIsEmpty(self.frame);
@@ -688,6 +769,76 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     
     CGFloat ret = ABS(y - startY);
     return ret;
+}
+
+#pragma mark - Subviews
+
++ (UIView *)firstResponder
+{
+    UIView *view = [[UIApplication sharedApplication] keyWindow];
+    return [view firstResponderInSubviews];
+}
+
+- (UIView *)firstResponderInSubviews
+{
+    UIView *responder;
+    
+    for (UIView *subview in [self subviews])
+    {
+        if ([subview isFirstResponder])
+            responder = subview;
+        else
+            responder = [subview firstResponderInSubviews];
+        
+        if (responder)
+            break;
+    }
+    
+    return responder;
+}
+
+- (NSArray *)subviewsOfClass:(Class)aClass recursive:(BOOL)recursive
+{
+    NSMutableArray *subviews = [@[] mutableCopy];
+    
+    for (UIView *subview in [self subviews])
+    {
+        if ([subview isKindOfClass:aClass])
+            [subviews addObject:subview];
+
+        if (recursive)
+            [subviews addObjectsFromArray:[subview subviewsOfClass:aClass recursive:YES]];
+
+    }
+    
+    return subviews;    
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:UIVIEW_HELPERS_FRAME_KVO_KEY])
+    {
+        [self frameDidChange];
+    }
+}
+
+#pragma mark - Helpers
+
+- (void)performInDebug:(void (^)(void))block
+{
+    [self performInRelease:NO block:block];
+}
+
+- (void)performInRelease:(BOOL)release block:(void (^)(void))block
+{
+#ifdef DEBUG
+    block();
+#else
+    if (release)
+        block();
+#endif
 }
 
 @end

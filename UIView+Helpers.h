@@ -117,14 +117,29 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 - (void)setVerticalFadeMaskWithTopOffset:(CGFloat)topOffset bottomOffset:(CGFloat)bottomOffset;
 
 // Snapshot creation
-- (UIImageView*)createSnapshot;
+- (UIImageView*)createSnapshot __deprecated_msg("use -snapshotImage or -snapshotImageView");
 
-// Debug
+- (UIImage*)snapshotImage;
+
+/*
+ * iOS 6 and prior: calls -snapshotView and wraps the result in a UIImageView
+ * on iOS 7 and up: calls and returns the stock -snapshotView method
+ */
+
+- (UIView*)snapshotImageView;
+
+/* Debug
+ *
+ * The functions below are only performed in DEBUG mode
+ * @param "showInRelease" will apply the function in both DEBUG and RELEASE mode
+ */
 - (void)showDebugFrame;
 - (void)hideDebugFrame;
+- (void)showDebugFrame:(BOOL)showInRelease;
+
+- (void)logFrameChanges;
 
 // Layout Helpers
-
 + (CGFloat)alignVertical:(VerticalLayoutType)type
                    views:(NSArray*)views
              withSpacing:(CGFloat)spacing
@@ -136,5 +151,10 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
         withSpacingArray:(NSArray*)spacing
                   inView:(UIView*)view
       shrinkSpacingToFit:(BOOL)shrinkSpacingToFit;
+
+// subviews
++ (UIView *)firstResponder;
+- (UIView *)firstResponderInSubviews;
+- (NSArray *)subviewsOfClass:(Class)aClass recursive:(BOOL)recursive;
 
 @end
