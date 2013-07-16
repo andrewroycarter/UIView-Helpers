@@ -128,9 +128,15 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 
 - (UIView*)snapshotImageView;
 
-// Debug
+/* Debug
+ *
+ * The functions below are only performed in DEBUG mode
+ * @param "showInRelease" will apply the function in both DEBUG and RELEASE mode
+ */
 - (void)showDebugFrame;
 - (void)hideDebugFrame;
+- (void)showDebugFrame:(BOOL)showInRelease;
+
 - (void)logFrameChanges;
 
 // Layout Helpers

@@ -7,6 +7,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#define nameOfVar(x) [NSString stringWithFormat:@"%s", #x]
+
 static inline CGRect CGRectRound(CGRect rect) {return CGRectMake((NSInteger)rect.origin.x, (NSInteger)rect.origin.y, (NSInteger)rect.size.width, (NSInteger)rect.size.height); }
 static NSString * const UIVIEW_HELPERS_FRAME_KVO_KEY = @"frame";
 
@@ -592,22 +594,23 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 
 - (void)showDebugFrame
 {
-    [self performInDebug:^{
-        
-        [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
-        [[self layer] setBorderWidth:1.0f];
-        
-    }];
+    [self showDebugFrame:NO];
 }
 
 - (void)hideDebugFrame
 {
-    [self performInDebug:^{
+    [[self layer] setBorderColor:nil];
+    [[self layer] setBorderWidth:0.0f];
+}
 
-        [[self layer] setBorderColor:nil];
-        [[self layer] setBorderWidth:0.0f];
-        
-    }];
+- (void)showDebugFrame:(BOOL)showInRelease
+{
+    [self performInRelease:showInRelease
+                     block:^{
+                         [[self layer] setBorderColor:[[UIColor redColor] CGColor]];
+                         [[self layer] setBorderWidth:1.0f];
+                     }];
+
 }
 
 - (void)logFrameChanges
@@ -625,9 +628,10 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     [self performInDebug:^{
 
         NSLog(@"%@", self);
-        NSLog(@"<%@: %d; frame = %@>", NSStringFromClass([self class]),
-                                    1000,
-                                    NSStringFromCGRect(self.frame));
+        NSLog(@"%@ <%@: %p; frame = %@>", nameOfVar(self),
+                                        NSStringFromClass([self class]),
+                                        self,
+                                        NSStringFromCGRect(self.frame));
         
     }];
 }
@@ -823,8 +827,16 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 
 - (void)performInDebug:(void (^)(void))block
 {
+    [self performInRelease:NO block:block];
+}
+
+- (void)performInRelease:(BOOL)release block:(void (^)(void))block
+{
 #ifdef DEBUG
     block();
+#else
+    if (release)
+        block();
 #endif
 }
 
