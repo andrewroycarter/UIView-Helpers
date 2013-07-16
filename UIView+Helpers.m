@@ -430,6 +430,8 @@ static NSString * const UIVIEW_HELPERS_FRAME_KVO_KEY = @"frame";
     }
 }
 
+#pragma mark - Corners and Masks
+
 - (void)roundCornersTopLeft:(CGFloat)topLeft topRight:(CGFloat)topRight bottomLeft:(CGFloat)bottomLeft bottomRight:(CGFloat)bottomRight
 {    
     UIImage *mask = createRoundedCornerMask([self bounds], topLeft, topRight, bottomLeft, bottomRight);
@@ -543,6 +545,8 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return mask;
 }
 
+#pragma mark - Snapshotting
+
 - (UIImageView *)createSnapshot
 {
     UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
@@ -592,6 +596,8 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return snapshot;
 }
 
+#pragma mark - Debugging
+
 - (void)showDebugFrame
 {
     [self showDebugFrame:NO];
@@ -635,8 +641,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     }];
 }
 
-#pragma mark -
-#pragma mark LayoutHelpers
+#pragma mark - LayoutHelpers
 
 - (BOOL)isViewVisible {
     BOOL isViewHidden = self.isHidden || self.alpha == 0 || CGRectIsEmpty(self.frame);
@@ -766,8 +771,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return ret;
 }
 
-#pragma mark -
-#pragma mark Subviews
+#pragma mark - Subviews
 
 + (UIView *)firstResponder
 {
@@ -810,8 +814,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return subviews;    
 }
 
-#pragma mark - 
-#pragma mark KVO
+#pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -821,8 +824,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     }
 }
 
-#pragma mark - 
-#pragma mark Helpers
+#pragma mark - Helpers
 
 - (void)performInDebug:(void (^)(void))block
 {
