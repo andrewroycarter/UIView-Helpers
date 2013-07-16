@@ -627,7 +627,6 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 {
     [self performInDebug:^{
 
-        NSLog(@"%@", self);
         NSLog(@"%@ <%@: %p; frame = %@>", nameOfVar(self),
                                         NSStringFromClass([self class]),
                                         self,
