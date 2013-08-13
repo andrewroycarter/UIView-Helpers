@@ -117,8 +117,7 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
 - (void)setVerticalFadeMaskWithTopOffset:(CGFloat)topOffset bottomOffset:(CGFloat)bottomOffset;
 
 // Snapshot creation
-- (UIImageView*)createSnapshot __deprecated_msg("use -snapshotImage or -snapshotImageView");
-
+- (UIImageView*)createSnapshot; // depricated
 - (UIImage*)snapshotImage;
 
 /*
