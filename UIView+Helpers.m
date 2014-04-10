@@ -541,56 +541,6 @@ static inline UIImage* createRoundedCornerMask(CGRect rect, CGFloat radius_tl, C
     return mask;
 }
 
-#pragma mark - Snapshotting
-
-- (UIImageView *)createSnapshot
-{
-    UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
-    
-    CGContextTranslateCTM(UIGraphicsGetCurrentContext(), -[self bounds].origin.x, -[self bounds].origin.y);
-    
-    [[self layer] renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    UIImageView *snapshot = [[UIImageView alloc] initWithImage:image];
-    [snapshot setFrame:[self frame]];
-    
-    return snapshot;
-}
-
-- (UIImage *)snapshotImage
-{
-    UIGraphicsBeginImageContextWithOptions([self bounds].size, YES, 0);
-    
-    CGContextTranslateCTM(UIGraphicsGetCurrentContext(), -[self bounds].origin.x, -[self bounds].origin.y);
-    
-    [[self layer] renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
-- (UIView *)snapshotImageView
-{
-    UIView *snapshot;
-    
-    if ([self respondsToSelector:@selector(snapshotView)])
-    {
-        snapshot = [self performSelector:@selector(snapshotView)];
-    }
-    
-    else
-    {
-        UIImage *image = [self snapshotImage];
-        snapshot = [[UIImageView alloc] initWithImage:image];
-        [snapshot setFrame:[self bounds]];
-    }
-    
-    return snapshot;
-}
-
 #pragma mark - Debugging
 
 - (void)showDebugFrame
