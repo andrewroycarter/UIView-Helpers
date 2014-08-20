@@ -1,3 +1,8 @@
+No Longer Maintained
+--------------------
+Please see [WTAHelpers](https://github.com/willowtreeapps/WTAHelpers) for a more up-to-date and full featured
+set of UIView helpers. These are inspired by UIView-Helpers, and have support for AutoLayout and other nice things.
+
 Overview
 --------
 UIView-Helpers is a collecion of methods that make laying out UIViews easier and readable.
